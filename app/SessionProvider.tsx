@@ -1,11 +1,14 @@
 "use client"
 import { SessionProvider } from 'next-auth/react';
+import {RecoilRoot} from 'recoil';
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SessionProvider>
-      {children}
-    </SessionProvider>
+    <RecoilRoot>
+      <SessionProvider>
+        {children}
+      </SessionProvider>
+    </RecoilRoot>
   );
 };
 
