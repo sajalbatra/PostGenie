@@ -140,7 +140,7 @@ const Home: React.FC = () => {
             {posts.length > 0 && (
                 <div className="space-y-4 fle-col items-center justify-center">
                     <p className="mb-4">
-                        Use the buttons below to filter the posts. Click "All Posts" to view all the posts or "My Posts" to see only the posts by the signed-in user.
+                        Use the buttons below to filter the posts. Click  All Posts  to view all the posts or My Posts to see only the posts by the signed-in user.
                     </p>
                     <button
                         onClick={() => setFilter('all')}
