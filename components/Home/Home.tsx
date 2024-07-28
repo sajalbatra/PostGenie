@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 
 // Define the Post type
 export interface Post {
-    prompt:string;
+    prompt: string;
     text: string;
     timestamp: string;
     author: string;
@@ -30,6 +30,7 @@ const Home: React.FC = () => {
     const [posts, setPosts] = useRecoilState<Post[]>(savedPostsAtom); // Ensure the type is correctly set
     const [loading, setLoading] = useState<boolean>(false);
     const [author, setAuthor] = useState<string>('');
+    const [filter, setFilter] = useState<'all' | 'mine'>('all');
 
     useEffect(() => {
         if (session?.user?.name) {
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         fetchPosts();
-    },[]);
+    }, [filter]);
 
     const handleGeneratePost = async () => {
         if (!prompt.trim()) {
@@ -49,7 +50,7 @@ const Home: React.FC = () => {
 
         setLoading(true);
 
-        let postText = ''; 
+        let postText = '';
         let isPostGenerated = false;
 
         try {
@@ -59,14 +60,14 @@ const Home: React.FC = () => {
             });
 
             postText = response.choices[0]?.message?.content || '';
-            isPostGenerated = !!postText; 
+            isPostGenerated = !!postText;
 
             if (!isPostGenerated) {
                 throw new Error('No response from OpenAI.');
             }
         } catch (err) {
             console.error('Error generating post:', err);
-            postText = 'Limit exhausted saving Sample message'; 
+            postText = 'Limit exhausted saving Sample message';
         }
 
         try {
@@ -96,11 +97,17 @@ const Home: React.FC = () => {
             const response = await axios.get<{ posts: Post[] }>('/api/fetchPosts');
             const allPosts = response.data.posts;
 
-            if (author === 'Sajal Batra') {
+            // if (author === 'Sajal Batra') {
+            //     setPosts(allPosts);
+            // } else {
+            //     setPosts(allPosts.filter(post => post.author === author));
+            // }
+            if (filter === 'all') {
                 setPosts(allPosts);
-            } else {
+            } else if (filter === 'mine') {
                 setPosts(allPosts.filter(post => post.author === author));
             }
+
         } catch (err) {
             console.error('Error fetching posts:', err);
         }
@@ -131,7 +138,20 @@ const Home: React.FC = () => {
                 </div>
             )}
             {posts.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-4 fle-col items-center justify-center">
+                    <p className="mb-4">
+                        Use the buttons below to filter the posts. Click "All Posts" to view all the posts or "My Posts" to see only the posts by the signed-in user.
+                    </p>
+                    <button
+                        onClick={() => setFilter('all')}
+                        className={`mr-2 px-4 py-2 rounded-md ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    >
+                        All Posts
+                    </button>
+                    <button
+                        onClick={() => setFilter('mine')}
+                        className={`px-4 py-2 rounded-md ${filter === 'mine' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    >Mine Post</button>
                     {posts.map((post, index) => (
                         <div key={index} className="border rounded-md p-4 bg-gray-100">
                             <p><strong>Prompt:</strong> {post.prompt}</p>
