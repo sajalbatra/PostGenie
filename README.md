@@ -1,7 +1,4 @@
-Here's the updated `README.md` including the folder structure:
-
-```markdown
-# FullStack Intern Assignment
+# PostGenie
 
 ## Overview
 
@@ -20,8 +17,8 @@ This project is a web application that allows users to generate social media pos
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/fullstack-intern-assignment.git
-   cd fullstack-intern-assignment
+   git clone https://github.com/sajalbatra/PostGenie
+   cd postgenie
    ```
 
 2. **Install Dependencies:**
@@ -124,7 +121,7 @@ This project is a web application that allows users to generate social media pos
 
 ## Deployment
 
-- **Deployed Application URL**: [Your deployed application URL]
+- **Deployed Application URL**: https://post-genie.vercel.app/
 
 ## Google Spreadsheet
 
@@ -136,18 +133,3 @@ This project is a web application that allows users to generate social media pos
 - Error messages are displayed in the UI if there is an issue with generating or saving posts.
 - The application provides feedback for successful and failed operations.
 
-## Contact Information
-
-- **Email**: your-email@example.com
-- **Phone**: (Your Phone Number)
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-```
-
-### Notes:
-- **Replace placeholders** (like `https://github.com/yourusername/fullstack-intern-assignment.git`, `your-email@example.com`, `Your Phone Number`, `Your deployed application URL`, and `Your Google Spreadsheet URL`) with your actual details.
-- **Deployment**: Follow the instructions specific to your deployment provider for successful deployment.
-- **Google Spreadsheet Access**: Ensure the Google Spreadsheet is publicly accessible if required.
