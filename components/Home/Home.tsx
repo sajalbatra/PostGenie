@@ -5,11 +5,10 @@ import promptatom from '@/recoil/promptatom';
 import generatedPostAtom from '@/recoil/generatedpostatom';
 import savedPostsAtom from '@/recoil/savedpostsatom';
 import { Input } from '../ui/input';
-import OpenAI from 'openai';
-import axios from 'axios'; // Ensure axios is installed
+import axios from 'axios'; 
 import { useSession } from 'next-auth/react';
+import { GoogleGenerativeAI } from "@google/generative-ai"
 
-// Define the Post type
 export interface Post {
     prompt: string;
     text: string;
@@ -17,17 +16,14 @@ export interface Post {
     author: string;
 }
 
-// Initialize OpenAI with your API key
-const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY!,
-    dangerouslyAllowBrowser: true,
-});
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 const Home: React.FC = () => {
     const { data: session } = useSession();
-    const [prompt, setPrompt] = useRecoilState<string>(promptatom);
+    const [userprompt, setuserPrompt] = useRecoilState<string>(promptatom);
     const [generatedPost, setGeneratedPost] = useRecoilState<string>(generatedPostAtom);
-    const [posts, setPosts] = useRecoilState<Post[]>(savedPostsAtom); // Ensure the type is correctly set
+    const [posts, setPosts] = useRecoilState<Post[]>(savedPostsAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const [author, setAuthor] = useState<string>('');
     const [filter, setFilter] = useState<'all' | 'mine'>('all');
@@ -36,6 +32,7 @@ const Home: React.FC = () => {
         if (session?.user?.name) {
             setAuthor(session.user.name);
         }
+        
     }, [session]);
 
     useEffect(() => {
@@ -43,47 +40,35 @@ const Home: React.FC = () => {
     }, [filter]);
 
     const handleGeneratePost = async () => {
-        if (!prompt.trim()) {
+        if (!userprompt.trim()) {
             alert('Please enter a prompt.');
             return;
         }
 
         setLoading(true);
-
         let postText = '';
-        let isPostGenerated = false;
 
         try {
-            const response = await openai.chat.completions.create({
-                model: 'gpt-3.5-turbo',
-                messages: [{ role: 'system', content: prompt }],
-            });
-
-            postText = response.choices[0]?.message?.content || '';
-            isPostGenerated = !!postText;
-
-            if (!isPostGenerated) {
-                throw new Error('No response from OpenAI.');
-            }
+            const result = await model.generateContent(userprompt);
+            postText = await result.response?.text() || 'No response from AI.';
+            setGeneratedPost(postText);
         } catch (err) {
             console.error('Error generating post:', err);
-            postText = 'Limit exhausted saving Sample message';
         }
 
         try {
             const saveResponse = await axios.post('/api/savePosts', {
                 post: postText,
-                prompt: prompt,
-                author: author,
+                prompt: userprompt,
+                author,
             });
 
             if (saveResponse.status === 200) {
                 alert('Post saved successfully.');
+                fetchPosts();
             } else {
                 alert('Failed to save post.');
             }
-
-            fetchPosts();
         } catch (err) {
             console.error('Error saving post:', err);
             alert('Failed to save post.');
@@ -96,12 +81,6 @@ const Home: React.FC = () => {
         try {
             const response = await axios.get<{ posts: Post[] }>('/api/fetchPosts');
             const allPosts = response.data.posts;
-
-            // if (author === 'Sajal Batra') {
-            //     setPosts(allPosts);
-            // } else {
-            //     setPosts(allPosts.filter(post => post.author === author));
-            // }
             if (filter === 'all') {
                 setPosts(allPosts);
             } else if (filter === 'mine') {
@@ -118,8 +97,8 @@ const Home: React.FC = () => {
             <h1 className="text-2xl font-bold mb-4 text-center">Social Media Post Generator</h1>
             <div className="mb-4">
                 <Input
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
+                    value={userprompt}
+                    onChange={(e) => setuserPrompt(e.target.value)}
                     className="mx-auto w-1/2 border rounded-md p-2"
                     placeholder="Enter your prompt here..."
                 />
