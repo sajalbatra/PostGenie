@@ -2,10 +2,10 @@
 
 ## Overview
 
-This project is a web application that allows users to generate social media posts using OpenAI's API and save them to a Google Spreadsheet using the Google Sheets API. The application also provides functionality to fetch and display posts from the spreadsheet.
+This project is a web application that allows users to generate social media posts using Google's **Gemini API** and save them to a Google Spreadsheet using the Google Sheets API. The application also provides functionality to fetch and display posts from the spreadsheet.
 
 ### Key Features:
-- **Generate Social Media Posts**: Users can input a prompt to generate social media posts.
+- **Generate Social Media Posts**: Users can input a prompt to generate social media posts using the Gemini API.
 - **Save Posts to Google Spreadsheet**: Generated posts are saved to a Google Spreadsheet with columns for timestamp, prompt, and post text.
 - **Display Posts**: Users can view all posts or filter to see only their own posts.
 - **Error Handling**: Includes error handling and user feedback for API requests.
@@ -32,7 +32,7 @@ This project is a web application that allows users to generate social media pos
    ```bash
    cp .env.example .env
    ```
-   Update the `.env` file with your OpenAI API key and Google Sheets API credentials.
+   Update the `.env` file with your **Gemini API key** and Google Sheets API credentials.
 
 4. **Deployment:**
    Deploy the application to a hosting provider of your choice (e.g., Vercel, Netlify). Follow the provider’s instructions for deploying a Next.js application.
@@ -125,11 +125,10 @@ This project is a web application that allows users to generate social media pos
 
 ## Google Spreadsheet
 
-- **Google Spreadsheet URL**: [[Your Google Spreadsheet URL](https://docs.google.com/spreadsheets/d/1PiSb93E5Rdnd30mvgrlHR5FwnL2U3jfhsX15kIFybBA/edit?gid=0#gid=0)]
+- **Google Spreadsheet URL**: [[Sheet Database](https://docs.google.com/spreadsheets/d/1PiSb93E5Rdnd30mvgrlHR5FwnL2U3jfhsX15kIFybBA/edit?gid=0#gid=0)]
   - **Access**: View and Edit access for everyone.
 
 ## Error Handling and User Feedback
 
 - Error messages are displayed in the UI if there is an issue with generating or saving posts.
 - The application provides feedback for successful and failed operations.
-
